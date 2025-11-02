@@ -12,6 +12,7 @@ import { writeFile } from '../tools/write.js';
 import { search } from '../tools/search.js';
 import { moveFile } from '../tools/move.js';
 import { deleteFile } from '../tools/delete.js';
+import { findFiles } from '../tools/find.js';
 
 export function createHttpServer(client: ObsidianClient, port: number) {
   const app = express();
@@ -66,7 +67,7 @@ export function createHttpServer(client: ObsidianClient, port: number) {
         },
         {
           name: 'read_file',
-          description: 'Read content of a file. Use file path WITHOUT trailing slash (e.g., "Notes/meeting.md")',
+          description: 'Read content of a file. TIP: If you don\'t know exact filename, use find_files first. Use file path WITHOUT trailing slash (e.g., "Notes/meeting.md")',
           inputSchema: {
             type: 'object',
             properties: {
@@ -167,6 +168,28 @@ export function createHttpServer(client: ObsidianClient, port: number) {
             required: ['path', 'confirm'],
           },
         },
+        {
+          name: 'find_files',
+          description: 'Search files in vault with fuzzy matching. Use this when you don\'t know the exact filename.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              query: {
+                type: 'string',
+                description: 'Search query (partial filename, can contain typos)'
+              },
+              fuzzy: {
+                type: 'boolean',
+                description: 'Enable fuzzy matching for typo tolerance (default: true)'
+              },
+              max_results: {
+                type: 'number',
+                description: 'Maximum number of results (default: 10)'
+              },
+            },
+            required: ['query'],
+          },
+        },
       ],
     };
   });
@@ -197,6 +220,9 @@ export function createHttpServer(client: ObsidianClient, port: number) {
         break;
       case 'delete_file':
         result = await deleteFile(client, args as any);
+        break;
+      case 'find_files':
+        result = await findFiles(client, args as any);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);
