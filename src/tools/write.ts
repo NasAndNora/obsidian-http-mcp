@@ -1,5 +1,6 @@
 import type { ObsidianClient } from '../client/obsidian.js';
 import type { ToolResult } from '../types/index.js';
+import { invalidateFilesCache } from './find.js';
 
 export async function writeFile(
   client: ObsidianClient,
@@ -28,6 +29,9 @@ export async function writeFile(
     } else {
       await client.writeFile(args.path, args.content);
     }
+
+    // Invalidate cache so new/modified file is immediately discoverable
+    invalidateFilesCache();
 
     return {
       success: true,

@@ -7,6 +7,11 @@ import { search } from '../utils/search.js';
 let filesCache: { data: string[]; timestamp: number } | null = null;
 const CACHE_TTL = 60000; // 60 seconds
 
+// Invalidate cache (called after write/delete/move operations)
+export function invalidateFilesCache(): void {
+  filesCache = null;
+}
+
 // Recursively walk vault tree and collect all file paths
 async function walkVault(client: ObsidianClient, path: string = ''): Promise<string[]> {
   const { files, folders } = await client.listVault(path);
@@ -14,23 +19,47 @@ async function walkVault(client: ObsidianClient, path: string = ''): Promise<str
   // Build full paths for files in current directory
   const fullPathFiles = files.map(f => (path ? `${path}/${f}` : f));
 
-  // Recursively walk all subdirectories in parallel
-  const subFiles = await Promise.all(
+  // Recursively walk all subdirectories in parallel (use allSettled for robustness)
+  const results = await Promise.allSettled(
     folders.map(folder => walkVault(client, path ? `${path}/${folder}` : folder))
   );
 
-  return [...fullPathFiles, ...subFiles.flat()];
+  // Extract successful results
+  const subFiles = results
+    .filter(r => r.status === 'fulfilled')
+    .map(r => (r as PromiseFulfilledResult<string[]>).value)
+    .flat();
+
+  // Log failed folder scans (continue with partial results)
+  results
+    .filter(r => r.status === 'rejected')
+    .forEach(r => {
+      const error = (r as PromiseRejectedResult).reason;
+      console.error('Failed to scan folder:', {
+        path,
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+
+  return [...fullPathFiles, ...subFiles];
 }
 
 // Get all files from vault with 60s cache
 async function getAllFiles(client: ObsidianClient): Promise<string[]> {
   // Check cache validity
   if (filesCache && Date.now() - filesCache.timestamp < CACHE_TTL) {
+    console.debug('find_files: cache hit (0 API calls)');
     return filesCache.data;
   }
 
   // Cache miss or expired - scan vault
+  console.debug('find_files: cache miss - scanning vault');
+  const startTime = Date.now();
+
   const allFiles = await walkVault(client);
+
+  const scanDuration = Date.now() - startTime;
+  console.debug(`find_files: scanned ${allFiles.length} files in ${scanDuration}ms`);
 
   // Update cache
   filesCache = { data: allFiles, timestamp: Date.now() };

@@ -1,5 +1,6 @@
 import type { ObsidianClient } from '../client/obsidian.js';
 import type { ToolResult } from '../types/index.js';
+import { invalidateFilesCache } from './find.js';
 
 export async function moveFile(
   client: ObsidianClient,
@@ -33,6 +34,9 @@ export async function moveFile(
     const content = await client.readFile(args.source);
     await client.writeFile(args.destination, content);
     await client.deleteFile(args.source);
+
+    // Invalidate cache so moved file is immediately searchable at new location
+    invalidateFilesCache();
 
     return {
       success: true,

@@ -1,5 +1,6 @@
 import type { ObsidianClient } from '../client/obsidian.js';
 import type { ToolResult } from '../types/index.js';
+import { invalidateFilesCache } from './find.js';
 
 export async function deleteFile(
   client: ObsidianClient,
@@ -29,6 +30,9 @@ export async function deleteFile(
     }
 
     await client.deleteFile(args.path);
+
+    // Invalidate cache so deleted file is immediately removed from search results
+    invalidateFilesCache();
 
     return {
       success: true,
