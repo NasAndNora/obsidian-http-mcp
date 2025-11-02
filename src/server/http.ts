@@ -36,26 +36,26 @@ export function createHttpServer(client: ObsidianClient, port: number) {
       tools: [
         {
           name: 'list_dir',
-          description: 'List subdirectories in a path',
+          description: 'List subdirectories in a path. IMPORTANT: Paths must end with / for directories (e.g., "BUSINESS/" not "BUSINESS")',
           inputSchema: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'Path to list (optional, default: root)'
+                description: 'Path to directory WITH trailing slash (e.g., "BUSINESS/" or "" for root)'
               },
             },
           },
         },
         {
           name: 'list_files',
-          description: 'List files in a directory',
+          description: 'List files in a directory. IMPORTANT: Directory paths must end with / (e.g., "Notes/" not "Notes")',
           inputSchema: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'Path to list (optional, default: root)'
+                description: 'Directory path WITH trailing slash (e.g., "Notes/" or "" for root)'
               },
               extension: {
                 type: 'string',
@@ -66,13 +66,13 @@ export function createHttpServer(client: ObsidianClient, port: number) {
         },
         {
           name: 'read_file',
-          description: 'Read content of a file',
+          description: 'Read content of a file. Use file path WITHOUT trailing slash (e.g., "Notes/meeting.md")',
           inputSchema: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'Path to file'
+                description: 'File path WITHOUT trailing slash (e.g., "Notes/meeting.md")'
               },
             },
             required: ['path'],
