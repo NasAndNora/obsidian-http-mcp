@@ -2,7 +2,7 @@
 
 ## Vue d'ensemble
 
-```
+```text
 src/
 ├── index.ts              # Entry point principal
 ├── cli.ts                # Parse arguments (--port, --api-key, --help)
@@ -30,7 +30,7 @@ src/
 
 ## Flow d'exécution
 
-```
+```text
 1. User: claude mcp list (auto-discovery)
 2. Claude CLI → POST http://localhost:3000/mcp
 3. Express server → StreamableHTTPServerTransport
@@ -43,16 +43,19 @@ src/
 ## Responsabilités par fichier
 
 ### `index.ts`
+
 - Import config
 - Start HTTP server
 - Log "Server running on port 3000"
 
 ### `cli.ts`
+
 - Parse process.argv
 - Handle --help, --version, --port, --api-key
 - Exit si args invalides
 
 ### `types/index.ts`
+
 ```typescript
 export interface Config {
   apiKey: string;
@@ -68,16 +71,19 @@ export interface ToolResult {
 ```
 
 ### `utils/config.ts`
+
 - Load .env avec dotenv
 - Validate OBSIDIAN_API_KEY existe
 - Return Config object
 
 ### `client/obsidian.ts`
+
 - axios instance configuré (baseURL, headers, auth)
 - Methods: listVault(), readFile(), writeFile(), deleteFile()
 - Error handling (404, 401, etc)
 
 ### `server/http.ts`
+
 - Express app
 - MCP SDK Server instance
 - StreamableHTTPServerTransport
@@ -86,7 +92,9 @@ export interface ToolResult {
 - Register tools via server.setRequestHandler()
 
 ### `tools/*.ts`
+
 Chaque tool:
+
 1. Valide input (path, params)
 2. Appelle client/obsidian.ts
 3. Transforme response en format MCP
@@ -109,7 +117,7 @@ Chaque tool:
 - `axios` → client/obsidian.ts
 - `dotenv` → utils/config.ts
 
-## Notes importantes
+## Notes importantesA
 
 - **Pas de stdio** - Tout HTTP pur (StreamableHTTP MCP 2025-03-26)
 - **Port par défaut**: 3000 (configurable)

@@ -44,6 +44,7 @@
 ## Instructions
 
 **TOUJOURS lire en premier**:
+
 1. `AGENTS.md` - Comment utiliser les agents efficacement
 2. `STRUCTURE.md` - Architecture du projet
 3. `TECHNICAL.md` - Spécifications détaillées

@@ -1,5 +1,4 @@
-# Roadmap
-# Obsidian HTTP MCP Server
+# Obsidian HTTP MCP Server - Roadmap
 
 **Last Updated**: 2025-11-02
 
@@ -10,6 +9,7 @@
 **Mission**: Become the standard HTTP-native MCP server for Obsidian, solving stdio bugs for 10,000+ users.
 
 **Key Results** (6 months):
+
 1. 1000+ GitHub stars
 2. 5000+ weekly npm downloads
 3. Top result for "obsidian mcp claude code"
@@ -24,6 +24,7 @@
 **Goal**: Launch with core features, 0 bugs
 
 **Features**:
+
 - ✅ HTTP server with MCP endpoint
 - ✅ 7 core tools (list/read/write/search/move/delete)
 - ✅ CLI with configuration
@@ -31,6 +32,7 @@
 - ✅ Complete documentation
 
 **Success Metrics**:
+
 - Installs without errors
 - Connects to Claude Code CLI
 - All tools work correctly
@@ -45,6 +47,7 @@
 **Goal**: Polish UX, add missing features
 
 **Features**:
+
 - [ ] Frontmatter tools (`get_frontmatter`, `set_frontmatter`)
 - [ ] Tag tools (`add_tags`, `remove_tags`, `list_tags`)
 - [ ] Better error messages
@@ -52,6 +55,7 @@
 - [ ] `--debug` flag for verbose logs
 
 **Success Metrics**:
+
 - 50+ GitHub stars
 - 100+ npm downloads
 - 0 bug reports
@@ -65,6 +69,7 @@
 **Goal**: Make it easier to contribute and debug
 
 **Features**:
+
 - [ ] Web UI for testing tools (localhost:3000/ui)
 - [ ] Interactive setup wizard
 - [ ] Docker support
@@ -72,6 +77,7 @@
 - [ ] CI/CD pipeline
 
 **Success Metrics**:
+
 - 2+ community PRs merged
 - 100% test coverage on tools
 - 200+ npm downloads/week
@@ -85,6 +91,7 @@
 **Goal**: Go beyond basic file ops
 
 **Features**:
+
 - [ ] **Semantic search** (embeddings-based)
 - [ ] **Graph tools** (backlinks, forward links)
 - [ ] **Batch operations** (bulk move/delete/tag)
@@ -92,6 +99,7 @@
 - [ ] **Daily notes helper** (auto-create, navigate)
 
 **Success Metrics**:
+
 - 300+ GitHub stars
 - 1000+ npm downloads/week
 - Featured in 5+ blog posts
@@ -105,12 +113,14 @@
 **Goal**: Handle large vaults (10,000+ notes)
 
 **Features**:
+
 - [ ] In-memory vault cache
 - [ ] Incremental indexing
 - [ ] Parallel tool execution
 - [ ] Response streaming for large files
 
 **Success Metrics**:
+
 - < 50ms avg tool response time
 - Handles 10k+ note vaults
 - 500+ GitHub stars
@@ -124,12 +134,14 @@
 **Goal**: Run as Obsidian Community Plugin
 
 **Features**:
+
 - [ ] Plugin version (no external server)
 - [ ] Submit to Obsidian Community Plugins
 - [ ] Unified codebase (CLI + Plugin)
 - [ ] Settings UI in Obsidian
 
 **Success Metrics**:
+
 - Approved in Community Plugins
 - 1000+ GitHub stars
 - 10,000+ plugin downloads
@@ -143,6 +155,7 @@
 **Goal**: Build integrations and community
 
 **Features**:
+
 - [ ] VS Code extension (quick access)
 - [ ] Raycast extension
 - [ ] Obsidian Sync support
@@ -150,6 +163,7 @@
 - [ ] Video tutorials
 
 **Success Metrics**:
+
 - 20+ community contributors
 - 100+ dependent projects
 - 5000+ weekly npm downloads
@@ -161,11 +175,13 @@
 ## 🔮 Future Ideas (Backlog)
 
 ### Performance
+
 - [ ] GraphQL-style batch queries
 - [ ] WebSocket real-time updates
 - [ ] Edge caching for search
 
 ### Features
+
 - [ ] AI-powered note summarization
 - [ ] Automatic tagging suggestions
 - [ ] Duplicate note detection
@@ -173,12 +189,14 @@
 - [ ] Export to other formats (PDF, HTML)
 
 ### Integrations
+
 - [ ] Dataview query support
 - [ ] Excalidraw diagram access
 - [ ] Canvas file manipulation
 - [ ] Tasks plugin integration
 
 ### Platform
+
 - [ ] Web version (SaaS option)
 - [ ] Mobile support (iOS/Android)
 - [ ] Desktop app (Electron)
@@ -231,6 +249,7 @@
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 **Priority Areas**:
+
 1. Bug reports and fixes
 2. Documentation improvements
 3. New tool implementations

@@ -326,7 +326,6 @@ PREVENTION: [similar pattern + lint rule]
 
 ---
 
-
 Claude Code a des agents spécialisés. Ce guide t'aide à les utiliser **efficacement** pour ce projet.
 
 ## Agents pertinents pour ce projet
@@ -338,7 +337,8 @@ Claude Code a des agents spécialisés. Ce guide t'aide à les utiliser **effica
 **Pourquoi**: Éviter duplication, vérifier si ça existe déjà
 
 **Exemple**:
-```
+
+```bash
 Avant d'implémenter list_files, vérifie avec precheck si une fonction similaire existe
 ```
 
@@ -349,7 +349,8 @@ Avant d'implémenter list_files, vérifie avec precheck si une fonction similair
 **Pourquoi**: Vérifier correctness, qualité, pas d'erreurs
 
 **Exemple**:
-```
+
+```bash
 Après avoir codé tools/read.ts, utilise code-review-verifier
 ```
 
@@ -360,7 +361,8 @@ Après avoir codé tools/read.ts, utilise code-review-verifier
 **Pourquoi**: Diagnostic systématique, pas de band-aid
 
 **Exemple**:
-```
+
+```bash
 BrokenPipeError, 404, timeout → root-cause-debugger
 ```
 
@@ -371,7 +373,8 @@ BrokenPipeError, 404, timeout → root-cause-debugger
 **Pourquoi**: Vérifier si fonctionnalité native existe
 
 **Exemple**:
-```
+
+```bash
 Avant de coder search custom, vérifier si Obsidian API a search natif
 ```
 
@@ -382,13 +385,14 @@ Avant de coder search custom, vérifier si Obsidian API a search natif
 **Pourquoi**: Vérifier N+1 queries, optimiser perf
 
 **Exemple**:
-```
+
+```bash
 Après search.ts, vérifier perf avec performance-optimizer
 ```
 
 ## Flow de développement recommandé
 
-```
+```text
 1. precheck (avant code)
 2. Coder le composant
 3. code-review-verifier (après code)

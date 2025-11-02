@@ -422,6 +422,57 @@ obsidian-http-mcp/
 
 ---
 
+#### 8. `find_files`
+
+**Description**: Search files by name with fuzzy matching
+
+**Input**:
+
+```typescript
+{
+  query: string;           // Required - Search query
+  fuzzy?: boolean;         // Default: true - Enable typo tolerance
+  max_results?: number;    // Default: 10 - Maximum results
+}
+```
+
+**Output**:
+
+```typescript
+{
+  success: boolean;
+  query: string;
+  total_matches: number;
+  matches: Array<{
+    path: string;          // Full path: "BUSINESS/AI/Note.md"
+    score: number;         // 0-1 similarity score
+    match_type: 'exact' | 'contains' | 'fuzzy';
+  }>;
+}
+```
+
+**Obsidian API Calls**: Multiple `GET /vault/{path}` (recursive scan)
+
+**Algorithm**:
+
+1. Scan vault recursively (cached 60s)
+2. Normalize query (strip emojis, lowercase)
+3. Try exact match first
+4. Try contains match (case-insensitive)
+5. If fuzzy enabled: Levenshtein distance (threshold 0.8)
+6. Sort by score, return top N
+
+**Performance**:
+
+- First call: 50 API calls for 50 folders (200-500ms)
+- Cached calls: 0 API calls (instant)
+- Cache TTL: 60 seconds
+- Parallel folder scanning via Promise.all
+
+**Use Case**: Claude cannot guess exact filenames, especially with emojis or special characters. This tool enables discovery before attempting `read_file`.
+
+---
+
 ## 🔐 Security Considerations
 
 ### API Key Handling

@@ -1,5 +1,4 @@
-# Product Requirements Document (PRD)
-# Obsidian HTTP MCP Server
+# Obsidian HTTP MCP Server - Product Requirements Document (PRD)
 
 **Version**: 1.0
 **Date**: 2025-11-02
@@ -147,7 +146,7 @@
 
 ### Installation Flow
 
-```
+```bash
 User → npm install -g obsidian-http-mcp
      → Get API key from Obsidian
      → obsidian-http-mcp --api-key XXX
@@ -179,7 +178,7 @@ User → npm install -g obsidian-http-mcp
 
 ### Project Structure
 
-```
+```text
 src/
 ├── index.ts          # Server entry point
 ├── cli.ts            # CLI argument parsing
@@ -202,7 +201,8 @@ src/
 
 ### API Design
 
-**Obsidian REST API Integration**:
+#### Obsidian REST API Integration
+
 - Base URL: `http://127.0.0.1:27123`
 - Auth: API key in `Authorization` header
 - Endpoints used:
