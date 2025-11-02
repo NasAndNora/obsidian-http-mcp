@@ -147,6 +147,20 @@ obsidian-http-mcp
 └─────────────────┘
 ```
 
+## ⚠️ Important Notes
+
+### Path Format (Obsidian REST API Requirement)
+
+**Directories must end with `/`**:
+- ✅ Correct: `list_files("Projects/")`
+- ❌ Wrong: `list_files("Projects")`
+
+**Files must NOT end with `/`**:
+- ✅ Correct: `read_file("Notes/meeting.md")`
+- ❌ Wrong: `read_file("Notes/meeting.md/")`
+
+The MCP tool descriptions guide Claude automatically, but keep this in mind if using the API directly.
+
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)

@@ -198,6 +198,13 @@ obsidian-http-mcp/
 
 ### Tool Specifications
 
+**⚠️ IMPORTANT - Trailing Slash Requirement**:
+- **Directories MUST end with `/`**: `BUSINESS/`, `Notes/`, `""` (root)
+- **Files MUST NOT have `/`**: `Notes/meeting.md`, `README.md`
+- This is an Obsidian REST API requirement enforced by the plugin
+
+---
+
 #### 1. `list_dir`
 
 **Description**: List subdirectories in a path
@@ -205,7 +212,7 @@ obsidian-http-mcp/
 **Input**:
 ```typescript
 {
-  path?: string;  // Optional, default: root
+  path?: string;  // Directory path WITH trailing slash (e.g., "BUSINESS/" or "")
 }
 ```
 
@@ -227,7 +234,7 @@ obsidian-http-mcp/
 **Input**:
 ```typescript
 {
-  path?: string;        // Optional, default: root
+  path?: string;        // Directory path WITH trailing slash (e.g., "Notes/" or "")
   extension?: string;   // Optional, filter by extension (e.g., "md")
 }
 ```
@@ -255,7 +262,7 @@ obsidian-http-mcp/
 **Input**:
 ```typescript
 {
-  path: string;  // Required
+  path: string;  // File path WITHOUT trailing slash (e.g., "Notes/meeting.md")
 }
 ```
 

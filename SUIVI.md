@@ -43,60 +43,70 @@ app.post('/mcp', async (req, res) => {
 });
 ```
 
-## Status actuel ✅
+## Status final ✅ FONCTIONNEL
 
 **Tests validés**:
-
 - ✅ Build: `npm run build` OK
-- ✅ Serveur: Port 3000
+- ✅ Serveur: Port 3000 (écoute sur 0.0.0.0)
 - ✅ MCP Initialize: Handshake fonctionne
 - ✅ tools/list: 7 tools exposés
-- ✅ Claude CLI: `claude mcp list` → Connected
-
-**Tests curl**:
-
-```bash
-# Initialize
-curl -X POST http://localhost:3000/mcp \
-  -H "Accept: application/json, text/event-stream" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","id":"1","method":"initialize","params":{...}}'
-
-# List tools
-curl -X POST http://localhost:3000/mcp \
-  -H "Accept: application/json, text/event-stream" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","id":"2","method":"tools/list","params":{}}'
-```
+- ✅ Claude CLI: Connected et tools accessibles dans `/mcp`
+- ✅ Integration Obsidian: list_files, read_file testés OK
 
 **Installation**:
 
 ```bash
+# Setup
+npm install
+cp .env.example .env
+# Éditer .env avec ta clé API Obsidian
+
 # Lancer serveur
 npm run dev
 
 # Ajouter à Claude CLI
-claude mcp add --transport http obsidian-http http://localhost:3000/mcp
+claude mcp add -s user --transport http obsidian-http http://localhost:3000/mcp
 
 # Vérifier
 claude mcp list
 # → obsidian-http: http://localhost:3000/mcp (HTTP) - ✓ Connected
 ```
 
-## Point critique
+## Points critiques découverts
 
-**Header requis**: `Accept: application/json, text/event-stream`
-
+### 1. Header Accept requis
+**Requis**: `Accept: application/json, text/event-stream`
 Sans, erreur: "Not Acceptable: Client must accept both..."
 
-## Prochaines étapes
+### 2. Trailing slash pour directories (IMPORTANT)
+**API Obsidian nécessite**:
+- ✅ Directories: `BUSINESS/` (avec slash)
+- ✅ Files: `Notes/meeting.md` (sans slash)
 
-1. Tester avec Obsidian REST API lancé (port 27123)
-2. Vérifier tools dans `/mcp` de Claude CLI
-3. Test complet read_file, list_files
+**Solution**: Descriptions explicites dans tool schemas pour guider Claude automatiquement.
 
-## Environnement
+### 3. Configuration multi-plateforme
 
-- WSL2 (dev sur localhost:3000)
-- Obsidian REST API Windows (172.19.32.1:27123)
-- Stack: Node.js, TypeScript, Express, axios
+**Windows (Obsidian + Serveur MCP)**:
+```env
+OBSIDIAN_BASE_URL=http://127.0.0.1:27123
+```
+
+**WSL2 (Dev + Claude CLI)**:
+```typescript
+app.listen(3000, '0.0.0.0')  // Écoute sur toutes interfaces
+```
+```bash
+claude mcp add [...] http://172.19.32.1:3000/mcp  # IP Windows depuis WSL2
+```
+
+### 4. Node_modules cross-platform
+**Attention**: Réinstaller `npm install` après clone entre WSL2↔Windows (binaires natifs différents).
+
+## Environnement validé
+
+- **Dev**: WSL2 ou Windows
+- **Obsidian**: Windows (port 27123)
+- **MCP Server**: Windows (port 3000, écoute 0.0.0.0)
+- **Claude CLI**: WSL2 (appelle 172.19.32.1:3000)
+- **Stack**: Node.js 18+, TypeScript, Express, axios
