@@ -8,10 +8,13 @@ src/
 ├── cli.ts                # Parse arguments (--port, --api-key, --help)
 │
 ├── types/
-│   └── index.ts          # Types TS partagés (Config, ToolResult, etc.)
+│   ├── index.ts          # Types TS partagés (Config, ToolResult, etc.)
+│   └── search.ts         # Types pour search utilities
 │
 ├── utils/
-│   └── config.ts         # Load .env + validate config
+│   ├── config.ts         # Load .env + validate config
+│   ├── search.ts         # Fuzzy search + Levenshtein utilities
+│   └── validation.ts     # Timestamp validation helpers
 │
 ├── client/
 │   └── obsidian.ts       # Wrapper axios pour Obsidian REST API (port 27123)
@@ -21,11 +24,12 @@ src/
 │
 └── tools/
     ├── list.ts           # list_dir + list_files
+    ├── find.ts           # find_files (fuzzy search by filename)
     ├── read.ts           # read_file
     ├── write.ts          # write_file (create/overwrite/append)
-    ├── search.ts         # search (grep-like + regex)
+    ├── search.ts         # search (grep-like + regex content search)
     ├── move.ts           # move_file
-    └── delete.ts         # delete_file (avec confirm)
+    └── delete.ts         # delete_file + delete_folder (soft delete)
 ```
 
 ## Flow d'exécution
@@ -100,15 +104,17 @@ Chaque tool:
 3. Transforme response en format MCP
 4. Return ToolResult
 
-## Ordre d'implémentation
+## État implémentation (v1.0 ✅ TERMINÉ)
 
-1. ✅ types/index.ts (types de base)
-2. ✅ utils/config.ts (config loader)
-3. ✅ client/obsidian.ts (API client)
-4. ✅ tools/*.ts (7 tools)
-5. ✅ server/http.ts (HTTP + MCP)
+1. ✅ types/ (types de base + search types)
+2. ✅ utils/ (config, search utilities, validation)
+3. ✅ client/obsidian.ts (API client avec encodePath pour emojis)
+4. ✅ tools/ (9 tools implémentés)
+5. ✅ server/http.ts (HTTP + MCP avec StreamableHTTPServerTransport)
 6. ✅ index.ts + cli.ts (entry points)
-7. ✅ Test build + run local
+7. ✅ Testé en local + soft delete + cache
+
+**Prochaine étape**: v1.0.1 Multi-vault Support (voir ROADMAP.md)
 
 ## Dépendances critiques
 

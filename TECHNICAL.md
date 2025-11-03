@@ -205,6 +205,7 @@ obsidian-http-mcp/
 ### Tool Specifications
 
 **⚠️ IMPORTANT - Trailing Slash Requirement**:
+
 - **Directories MUST end with `/`**: `BUSINESS/`, `Notes/`, `""` (root)
 - **Files MUST NOT have `/`**: `Notes/meeting.md`, `README.md`
 - This is an Obsidian REST API requirement enforced by the plugin
@@ -316,6 +317,7 @@ obsidian-http-mcp/
 ```
 
 **Obsidian API Calls**:
+
 - Create: `PUT /vault/{path}`
 - Overwrite: `PUT /vault/{path}` (with existing file check)
 - Append: `PATCH /vault/{path}`
@@ -354,10 +356,17 @@ obsidian-http-mcp/
 
 **Implementation**:
 
-1. List all files
-2. Read each file
-3. Perform regex/text search
+1. Scan vault recursively with `walkVault()` (no cache - fresh results every call)
+2. Filter markdown files only
+3. Read each file and perform regex/text search
 4. Return matches with context
+
+**Performance Trade-off**:
+
+- **No caching**: Each search does full vault scan (50-100ms per search)
+- **Why**: Guarantees fresh results - files created/modified between searches are always found
+- **Impact**: ~50 API calls per search on 50-folder vault
+- **Alternative**: Could use `getAllFiles()` 60s cache (10-20x faster repeated searches) but risks stale results
 
 ---
 
@@ -387,6 +396,7 @@ obsidian-http-mcp/
 ```
 
 **Obsidian API Calls**:
+
 1. Read source file: `GET /vault/{source}`
 2. Write to destination: `PUT /vault/{destination}`
 3. Delete source: `DELETE /vault/{source}`
@@ -420,10 +430,12 @@ obsidian-http-mcp/
 ```
 
 **Obsidian API Calls**:
+
 - Soft delete (default): `GET` source → `PUT` trash → `DELETE` source
 - Hard delete: `DELETE /vault/{path}`
 
 **Safety**:
+
 - Requires `confirm: true` to prevent accidental deletions
 - Soft delete by default protects against AI operation accidents
 - Trash format: `.trash-http-mcp/{ISO8601-timestamp}_{filename}`
@@ -465,6 +477,7 @@ obsidian-http-mcp/
 3. Preserve folder structure in trash: `.trash-http-mcp/{timestamp}/{original/path/file.md}`
 
 **Limitations**:
+
 - Empty folders remain (Obsidian REST API has no folder deletion endpoint)
 - Trash format: `.trash-http-mcp/{ISO8601-timestamp}/{folder}/`
 

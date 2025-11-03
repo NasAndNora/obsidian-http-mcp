@@ -21,34 +21,43 @@
 ## Stack Technique
 
 - Node.js/npm (pas Bun - compatibilité future Community Plugin)
-- Hono (HTTP léger)
-- @modelcontextprotocol/sdk officiel
+- Express (HTTP server, MCP SDK compatible)
+- @modelcontextprotocol/sdk officiel (StreamableHTTPServerTransport)
 - axios (Obsidian REST API port 27123)
 
-## 7 Tools à implémenter
+## 9 Tools implémentés (v1.0 ✅)
 
-1. list_dir
-2. list_files
-3. read_file
-4. write_file (modes: create/overwrite/append)
-5. search (grep-like + regex)
-6. move_file
-7. delete_file (avec confirm safety)
+1. list_dir - Liste dossiers
+2. list_files - Liste fichiers dans dossier
+3. find_files - Recherche fichiers par nom (fuzzy matching)
+4. read_file - Lit contenu fichier
+5. write_file - Crée/met à jour fichier (modes: create/overwrite/append)
+6. search - Recherche texte dans vault (grep-like + regex)
+7. move_file - Déplace/renomme fichier
+8. delete_file - Supprime fichier (soft delete par défaut)
+9. delete_folder - Supprime dossier récursivement (soft delete par défaut)
 
 ## État actuel
 
-- ✅ Documentation complète (README, PRD, TECHNICAL, ROADMAP)
-- ✅ package.json configuré
-- ⏳ Création structure src/ + implémentation core
+**v1.0 ✅ TERMINÉ** (2025-11-03):
+
+- ✅ 9 core tools implémentés
+- ✅ HTTP server avec MCP endpoint
+- ✅ Soft delete dans `.trash-http-mcp/`
+- ✅ Cache 60s pour find_files (perf)
+- ✅ Documentation complète
+- ✅ Ready for npm publish
+
+**Prochaine étape: v1.0.1 - Multi-vault Support** (voir ROADMAP.md)
 
 ## Instructions
 
 **TOUJOURS lire en premier**:
 
-1. `AGENTS.md` - Comment utiliser les agents efficacement
-2. `STRUCTURE.md` - Architecture du projet
-3. `TECHNICAL.md` - Spécifications détaillées
+1. `ROADMAP.md` - Prochaines features (v1.0.1 = multi-vault)
+2. `TECHNICAL.md` - Spécifications détaillées des 9 tools
+3. `STRUCTURE.md` - Architecture du projet
 
-**Puis**: Continuer le développement où ça s'est arrêté.
+**Puis**: Continuer selon roadmap.
 
-**Style**: Pragmatique, concis, focus résultats.
+**Style**: Pragmatique, concis, focus résultats, MVP-first, no overengineering.

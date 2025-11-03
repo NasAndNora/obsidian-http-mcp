@@ -1,17 +1,17 @@
 # Obsidian HTTP MCP Server - Roadmap
 
-**Last Updated**: 2025-11-02
+**Last Updated**: 2025-11-03
 
 ---
 
 ## 🎯 Vision & Goals
 
-**Mission**: Become the standard HTTP-native MCP server for Obsidian, solving stdio bugs for 10,000+ users.
+**Mission**: Become the standard HTTP-native MCP server for Obsidian, solving stdio bugs for users.
 
-**Key Results** (6 months):
+**Key Results**:
 
-1. 1000+ GitHub stars
-2. 5000+ weekly npm downloads
+1. GitHub stars via quality & stability
+2. npm downloads via real user value
 3. Top result for "obsidian mcp claude code"
 4. Community-driven feature development
 
@@ -19,262 +19,157 @@
 
 ## 📅 Release Timeline
 
-### v1.0 - MVP (Week 1) ⏳ IN PROGRESS
+### v1.0 - MVP ✅ COMPLETED
 
 **Goal**: Launch with core features, 0 bugs
 
 **Features**:
 
 - ✅ HTTP server with MCP endpoint
-- ✅ 7 core tools (list/read/write/search/move/delete)
+- ✅ 9 core tools (list_dir, list_files, find_files, read, write, search, move, delete_file, delete_folder)
 - ✅ CLI with configuration
 - ✅ Environment variable support
+- ✅ Soft delete with `.trash-http-mcp/`
 - ✅ Complete documentation
 
-**Success Metrics**:
-
-- Installs without errors
-- Connects to Claude Code CLI
-- All tools work correctly
-- 10+ GitHub stars
-
-**Timeline**: 3 hours (2025-11-02)
+**Status**: Ready for npm publish
 
 ---
 
-### v1.0.1 - Multi-vault & MCP Resources (Day 2) 🔥 CRITICAL
+### v1.0.1 - Multi-vault Support (Day 2-3) 🔥 PRIORITY
 
-**Goal**: Support multiple vaults + full MCP spec compliance
+**Goal**: Support multiple vaults in single server instance
 
-#### 1. Multi-vault Support
-
-**Why**: Isolate personal/professional/projects, single server instance
+**Why**: Isolate personal/professional/projects (e.g., one vault on port 27123, another on 27124)
 
 **Config `.env`**:
 ```bash
-VAULTS=[{"name":"perso","apiKey":"key1","baseUrl":"http://127.0.0.1:27123"},{"name":"business","apiKey":"key2","baseUrl":"http://127.0.0.1:27124"}]
+# Single vault (default - backward compatible)
+OBSIDIAN_API_KEY=xxx
+OBSIDIAN_BASE_URL=http://127.0.0.1:27123
+PORT=3000
+
+# OR Multi-vault
+VAULTS=[{"name":"personal","apiKey":"key1","baseUrl":"http://127.0.0.1:27123"},{"name":"work","apiKey":"key2","baseUrl":"http://127.0.0.1:27124"}]
 PORT=3000
 ```
 
 **Implementation**:
 
-1. `types/index.ts` - Add VaultConfig, Config with vaults[]
-2. `config.ts` - Parse JSON array from env
-3. `vault-manager.ts` - NEW: Map<name, ObsidianClient>
-4. `index.ts` - Instantiate VaultManager
-5. `http.ts` - Add `vault` param to all tools
+1. `vault-manager.ts` - NEW: Manage multiple ObsidianClient instances
+2. `types/index.ts` - Add VaultConfig interface
+3. `config.ts` - Parse VAULTS JSON array (fallback to single vault)
+4. All tools - Add optional `vault` parameter (default to first vault)
+5. `http.ts` - Pass vault to tools
 
-**VaultManager**:
+**Usage**:
 ```typescript
-class VaultManager {
-  private clients = new Map<string, ObsidianClient>();
+// Single vault (no vault param needed)
+read_file({ path: "note.md" })
 
-  getClient(vault: string): ObsidianClient {
-    if (!this.clients.has(vault)) throw new Error(`Unknown vault: ${vault}`);
-    return this.clients.get(vault)!;
-  }
-}
+// Multi-vault (specify vault)
+read_file({ vault: "work", path: "meeting.md" })
 ```
 
-**Usage**: `list_dir({ vault: "perso", path: "TECH/" })`
+**Backward compatible**: Existing single-vault configs continue working
 
 **Effort**: ~150 lines, 5 files modified
 
-#### 2. MCP Resources
-
-**Why**: MCP spec requires tools + resources. Stable URIs for notes.
-
-**Difference**:
-- Tools = actions (read, write)
-- Resources = data (notes exposed via URI)
-
-**URIs**: `obsidian://perso/TECH/note.md`, `obsidian://business/meeting.md`
-
-**Implementation**:
-
-1. `http.ts` - Add handlers:
-   - `ListResourcesRequestSchema` → list all .md files
-   - `ReadResourceRequestSchema` → read by URI
-   - Capabilities: `resources: {}`
-
-2. `resources/list.ts` - NEW
-3. `resources/read.ts` - NEW
-
-**Code**:
-```typescript
-// List
-resources: files.map(f => ({
-  uri: `obsidian://${vault}/${f.path}`,
-  name: f.name,
-  mimeType: "text/markdown"
-}))
-
-// Read
-const [vault, ...path] = uri.replace('obsidian://', '').split('/');
-const client = vaultManager.getClient(vault);
-return client.readFile(path.join('/'));
-```
-
-**Benefits**: Lazy loading, client-side caching, MCP compliance
-
-**Effort**: ~200 lines, 3 files created
-
-**Dependency**: Multi-vault required (URIs include vault name)
-
-**Checklist**:
-- [ ] Multi-vault: VaultManager
-- [ ] Multi-vault: vault param in all tools
-- [ ] Resources: ListResources handler
-- [ ] Resources: ReadResource handler
-- [ ] Tests E2E
-- [ ] README update
-
-**Timeline**: 1 day (tomorrow)
+**Timeline**: Day 2-3
 
 ---
 
-### v1.1 - Refinements (Week 2)
+### v1.1 - UX Polish (Week 2)
 
-**Goal**: Polish UX, add missing features
+**Goal**: Community-driven improvements based on feedback
 
 **Features**:
 
-- [ ] Frontmatter tools (`get_frontmatter`, `set_frontmatter`)
-- [ ] Tag tools (`add_tags`, `remove_tags`, `list_tags`)
-- [ ] Better error messages
-- [ ] Auto-detect Obsidian REST API URL
+- [ ] Auto-detect Obsidian REST API URL (check ports 27123/27124)
 - [ ] `--debug` flag for verbose logs
+- [ ] Better error messages (sanitize paths, add suggestions)
+- [ ] Health check improvements
 
-**Success Metrics**:
+**User-driven features** (wait for >3 requests):
 
-- 50+ GitHub stars
-- 100+ npm downloads
-- 0 bug reports
+- Frontmatter tools (`get_frontmatter`, `set_frontmatter`)
+- Tag tools (`add_tags`, `remove_tags`, `list_tags`)
+- Template support
+- Graph tools (backlinks)
 
-**Timeline**: 1 week
+**Timeline**: Community-driven
 
 ---
 
-### v1.2 - Developer Experience (Week 3-4)
+### v1.2 - Quality & Testing (Week 3-4)
 
-**Goal**: Make it easier to contribute and debug
+**Goal**: Production-ready reliability
 
 **Features**:
 
-- [ ] Web UI for testing tools (localhost:3000/ui)
-- [ ] Interactive setup wizard
-- [ ] Docker support
-- [ ] Test suite (unit + integration)
-- [ ] CI/CD pipeline
+- [ ] Unit test suite (tools only)
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Docker support (optional deployment)
+- [ ] Performance benchmarks
 
-**Success Metrics**:
+**Nice-to-have** (if time permits):
 
-- 2+ community PRs merged
-- 100% test coverage on tools
-- 200+ npm downloads/week
+- Interactive setup wizard
+- Web UI for testing (localhost:3000/ui)
 
 **Timeline**: 2 weeks
 
 ---
 
-### v2.0 - Advanced Features (Month 2)
+### v2.0 - Community Features (Month 2+)
 
-**Goal**: Go beyond basic file ops
+**Goal**: Implement most-requested features
 
-**Features**:
+**Features** (priority based on GitHub issues):
 
-- [ ] **Semantic search** (embeddings-based)
-- [ ] **Graph tools** (backlinks, forward links)
 - [ ] **Batch operations** (bulk move/delete/tag)
 - [ ] **Template support** (Templater integration)
 - [ ] **Daily notes helper** (auto-create, navigate)
+- [ ] **Graph tools** (backlinks, forward links)
 
-**Success Metrics**:
+**NOT in scope** (separate projects if needed):
 
-- 300+ GitHub stars
-- 1000+ npm downloads/week
-- Featured in 5+ blog posts
+- ~~Semantic search~~ (too heavy - vector DB, embeddings, costs)
+- ~~Plugin mode~~ (different architecture, separate codebase)
+- ~~VS Code/Raycast extensions~~ (out of scope)
 
-**Timeline**: 3 weeks
+**Timeline**: Community-driven
 
 ---
 
-### v2.1 - Performance (Month 3)
+### v2.1 - Performance Optimization (Month 3)
 
-**Goal**: Handle large vaults (10,000+ notes)
+**Goal**: Optimize for large vaults (5000+ notes)
 
 **Features**:
 
-- [ ] In-memory vault cache
-- [ ] Incremental indexing
+- [ ] Extend cache TTL options (configurable)
 - [ ] Parallel tool execution
 - [ ] Response streaming for large files
+- [ ] Request queuing
 
-**Success Metrics**:
+**Note**: In-memory cache already exists (60s TTL in find.ts)
 
-- < 50ms avg tool response time
-- Handles 10k+ note vaults
-- 500+ GitHub stars
-
-**Timeline**: 2 weeks
-
----
-
-### v3.0 - Plugin Mode (Month 4)
-
-**Goal**: Run as Obsidian Community Plugin
-
-**Features**:
-
-- [ ] Plugin version (no external server)
-- [ ] Submit to Obsidian Community Plugins
-- [ ] Unified codebase (CLI + Plugin)
-- [ ] Settings UI in Obsidian
-
-**Success Metrics**:
-
-- Approved in Community Plugins
-- 1000+ GitHub stars
-- 10,000+ plugin downloads
-
-**Timeline**: 4 weeks
-
----
-
-### v3.1 - Ecosystem (Month 5-6)
-
-**Goal**: Build integrations and community
-
-**Features**:
-
-- [ ] VS Code extension (quick access)
-- [ ] Raycast extension
-- [ ] Obsidian Sync support
-- [ ] Public MCP registry listing
-- [ ] Video tutorials
-
-**Success Metrics**:
-
-- 20+ community contributors
-- 100+ dependent projects
-- 5000+ weekly npm downloads
-
-**Timeline**: 6 weeks
+**Timeline**: Based on performance reports
 
 ---
 
 ## 🔮 Future Ideas (Backlog)
 
+**Note**: These are ideas ONLY. Implementation requires community demand (>5 users requesting).
+
 ### Performance
 
-- [ ] GraphQL-style batch queries
 - [ ] WebSocket real-time updates
-- [ ] Edge caching for search
+- [ ] GraphQL-style batch queries
 
 ### Features
 
-- [ ] AI-powered note summarization
-- [ ] Automatic tagging suggestions
 - [ ] Duplicate note detection
 - [ ] Note merge tool
 - [ ] Export to other formats (PDF, HTML)
@@ -282,56 +177,52 @@ return client.readFile(path.join('/'));
 ### Integrations
 
 - [ ] Dataview query support
-- [ ] Excalidraw diagram access
 - [ ] Canvas file manipulation
 - [ ] Tasks plugin integration
 
-### Platform
+### Separate Projects (Out of Scope)
 
-- [ ] Web version (SaaS option)
-- [ ] Mobile support (iOS/Android)
-- [ ] Desktop app (Electron)
+- ❌ Semantic search (requires vector DB infrastructure)
+- ❌ Plugin mode (different architecture, separate repo)
+- ❌ VS Code/Raycast extensions (out of scope for MCP server)
+- ❌ Web/Mobile/Desktop apps (platform specific)
 
 ---
 
-## 🚧 Known Limitations & Future Work
+## 🚧 Known Limitations
 
 ### Current Limitations (v1.0)
 
-1. **No concurrent requests** - Tools run sequentially
-2. **No caching** - Each request hits Obsidian API
-3. **Limited search** - Text only, no semantic
-4. **No real-time sync** - Polling required for changes
+1. **Single vault only** - One Obsidian instance per server (fixed in v1.0.1)
+2. **Text search only** - No semantic/AI-powered search (by design for simplicity)
+3. **No real-time sync** - Client must re-query for updates (HTTP limitation)
 
-### Planned Solutions
+### Not Planned
 
-- v1.2: Add request queuing
-- v2.1: Implement caching layer
-- v2.0: Add semantic search
-- v3.1: WebSocket for real-time
+- Semantic search (infrastructure too heavy)
+- Real-time WebSocket (adds complexity, limited value for MCP use case)
+- Plugin mode (separate project if needed)
 
 ---
 
-## 📊 Metrics Tracking
+## 📊 Success Metrics
 
-### Key Performance Indicators (KPIs)
+### Quality over Quantity
 
-| Metric | Current | v1.0 Target | v2.0 Target | v3.0 Target |
-|--------|---------|-------------|-------------|-------------|
-| GitHub Stars | 0 | 10 | 300 | 1000 |
-| npm Downloads/week | 0 | 50 | 1000 | 5000 |
-| Active Users | 0 | 20 | 500 | 2000 |
-| Contributors | 1 | 1 | 5 | 20 |
-| Issues Resolved | 0 | 5 | 50 | 200 |
+Focus on:
 
-### Quality Metrics
+- **Stability**: 0 critical bugs
+- **Performance**: < 200ms avg response time (small vaults)
+- **UX**: Works out-of-box for 80% users
+- **Community**: Responsive to issues/PRs
 
-| Metric | Target |
-|--------|--------|
-| Test Coverage | 80%+ |
-| Avg Response Time | < 100ms |
-| Uptime | 99.9% |
-| Bug Reports | < 5/month |
+### Growth (secondary)
+
+| Metric | v1.0 | v2.0 |
+|--------|------|------|
+| GitHub Stars | 10+ | 100+ |
+| npm Downloads/week | 20+ | 200+ |
+| Bug Reports | < 3/month | < 5/month |
 
 ---
 
@@ -348,16 +239,15 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---
 
-## 📣 Communication Channels
+## 📣 Communication
 
 - **GitHub Issues**: Bug reports, feature requests
 - **GitHub Discussions**: Questions, ideas
 - **npm**: Package releases
-- **Reddit**: r/ObsidianMD announcements
-- **Twitter**: @obsidian_http_mcp (planned)
 
 ---
 
-**Maintained by**: Claude (AI Assistant)
+**Maintained by**: Nas + Claude (AI Assistant)
 **License**: MIT
 **Status**: 🟢 Active Development
+**Philosophy**: MVP-first, community-driven, no overengineering

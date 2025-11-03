@@ -5,3 +5,7 @@ dist/
 .DS_Store
 
 .early.coverage
+
+# Internal docs (not for public repo)
+AGENTS.md
+SUIVI.md

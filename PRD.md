@@ -12,10 +12,10 @@
 
 ### Success Metrics
 
-1. **GitHub Stars**: 100+ in first month
-2. **npm Downloads**: 500+ weekly
-3. **User Satisfaction**: 0 stdio-related bug reports
-4. **Adoption**: Top 3 Obsidian MCP on GitHub search
+1. **GitHub Stars**: 10+ (quality over quantity)
+2. **npm Downloads**: 20+ weekly
+3. **User Satisfaction**: 0 critical bugs
+4. **Adoption**: Works out-of-box for 80% users
 
 ---
 
@@ -72,44 +72,19 @@
 
 ## ✨ Features
 
-### MVP (v1.0) - Must Have
+### MVP (v1.0) ✅ COMPLETED
 
-#### MCP Tools (7 total)
+#### MCP Tools (9 total)
 
-1. **list_dir**
-   - Input: `path` (optional, default: root)
-   - Output: Array of directory names
-   - Use case: Browse vault structure
-
-2. **list_files**
-   - Input: `path` (optional), `extension` (optional)
-   - Output: Array of file objects (name, path, modified)
-   - Use case: Get notes in a folder
-
-3. **read_file**
-   - Input: `path` (required)
-   - Output: File content (markdown) + metadata
-   - Use case: Read note content
-
-4. **write_file**
-   - Input: `path`, `content`, `mode` (create/overwrite/append)
-   - Output: Success confirmation
-   - Use case: Create or update notes
-
-5. **search**
-   - Input: `query` (text or regex), `case_sensitive` (bool)
-   - Output: Array of matches (file, line, content)
-   - Use case: Grep-like search
-
-6. **move_file**
-   - Input: `source_path`, `dest_path`
-   - Output: Success confirmation
-   - Use case: Reorganize vault
-
-7. **delete_file**
-   - Input: `path`, `confirm` (bool)
-   - Output: Success confirmation
-   - Use case: Clean up notes
+1. **list_dir** - List directories
+2. **list_files** - List files in directory
+3. **find_files** - Search files by name (fuzzy matching, 60s cache)
+4. **read_file** - Read file content
+5. **write_file** - Create/update file (modes: create/overwrite/append)
+6. **search** - Search text in vault (grep-like + regex, recursive)
+7. **move_file** - Move/rename file
+8. **delete_file** - Delete file (soft delete by default to `.trash-http-mcp/`)
+9. **delete_folder** - Delete folder recursively (soft delete by default)
 
 #### Server Requirements
 
@@ -126,19 +101,11 @@
 - **Security**: API key validation, no vault exposure
 - **Compatibility**: Node.js 18+, Obsidian REST API 3.0+
 
-### v1.1 - Should Have
+### v1.0.1 - Next Priority
 
-- Frontmatter manipulation tools
-- Tag management tools
-- Batch operations (bulk move/delete)
-- Web UI for testing tools
+**Multi-vault Support** - Manage multiple Obsidian vaults from single server instance
 
-### v2.0 - Nice to Have
-
-- WebSocket support for real-time updates
-- Plugin mode (run as Obsidian plugin)
-- Built-in vault caching for performance
-- Advanced search (fuzzy, semantic)
+See [ROADMAP.md](./ROADMAP.md) for detailed v1.1+ features (community-driven)
 
 ---
 
@@ -227,26 +194,16 @@ src/
 
 ## 📊 Success Criteria
 
-### Launch (Week 1)
+### v1.0 Launch ✅ ACHIEVED
 
-- [ ] 0 critical bugs
-- [ ] Works with Claude Code CLI
-- [ ] Complete documentation
-- [ ] 10+ GitHub stars
+- ✅ 0 critical bugs
+- ✅ Works with Claude Code CLI
+- ✅ Complete documentation
+- ⏳ 10+ GitHub stars (pending publish)
 
-### Growth (Month 1)
+### Growth Targets
 
-- [ ] 100+ GitHub stars
-- [ ] 500+ npm downloads
-- [ ] 5+ positive user testimonials
-- [ ] Mentioned in 3+ blog posts
-
-### Maturity (Month 3)
-
-- [ ] 500+ GitHub stars
-- [ ] 2000+ npm downloads
-- [ ] Community PRs accepted
-- [ ] Featured on MCP showcase
+See [ROADMAP.md](./ROADMAP.md) for detailed metrics (quality over quantity approach)
 
 ---
 
