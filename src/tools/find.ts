@@ -3,9 +3,11 @@ import type { ToolResult } from '../types/index.js';
 import type { SearchOptions } from '../types/search.js';
 import { search } from '../utils/search.js';
 
-// Cache for vault files (60s TTL to avoid N+1 queries on multiple searches)
+// Cache configuration
+const CACHE_TTL_MS = 60000; // 60 seconds - TTL to avoid N+1 queries on multiple searches
+
+// Cache for vault files
 let filesCache: { data: string[]; timestamp: number } | null = null;
-const CACHE_TTL = 60000; // 60 seconds
 
 // Invalidate cache (called after write/delete/move operations)
 export function invalidateFilesCache(): void {
@@ -44,10 +46,10 @@ export async function walkVault(client: ObsidianClient, path: string = ''): Prom
   return [...fullPathFiles, ...subFiles];
 }
 
-// Get all files from vault with 60s cache
+// Get all files from vault with cache
 async function getAllFiles(client: ObsidianClient): Promise<string[]> {
   // Check cache validity
-  if (filesCache && Date.now() - filesCache.timestamp < CACHE_TTL) {
+  if (filesCache && Date.now() - filesCache.timestamp < CACHE_TTL_MS) {
     console.debug('find_files: cache hit (0 API calls)');
     return filesCache.data;
   }

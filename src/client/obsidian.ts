@@ -1,5 +1,4 @@
 import axios, { type AxiosInstance } from 'axios';
-import type { ObsidianFile } from '../types/index.js';
 
 export class ObsidianClient {
   private client: AxiosInstance;
@@ -16,7 +15,9 @@ export class ObsidianClient {
   }
 
   private validatePath(path: string): void {
-    if (path.includes('..')) {
+    // Decode URL encoding to prevent bypass via %2e%2e
+    const decoded = decodeURIComponent(path);
+    if (decoded.includes('..') || decoded.startsWith('/') || decoded.includes('//')) {
       throw new Error('Invalid path: traversal not allowed');
     }
   }

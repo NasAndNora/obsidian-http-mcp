@@ -12,13 +12,6 @@ export interface ToolResult {
   error?: string;
 }
 
-export interface ObsidianFile {
-  name: string;
-  path: string;
-  size: number;
-  modified: string;
-}
-
 export interface SearchMatch {
   file: string;
   line: number;

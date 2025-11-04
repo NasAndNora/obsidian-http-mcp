@@ -13,6 +13,18 @@ import { search } from '../tools/search.js';
 import { moveFile } from '../tools/move.js';
 import { deleteFile, deleteFolder } from '../tools/delete.js';
 import { findFiles } from '../tools/find.js';
+import type {
+  ListDirArgs,
+  ListFilesArgs,
+  ReadFileArgs,
+  WriteFileArgs,
+  SearchArgs,
+  MoveFileArgs,
+  DeleteFileArgs,
+  DeleteFolderArgs,
+  FindFilesArgs,
+} from '../types/tools.js';
+import { VERSION } from '../utils/version.js';
 
 export function createHttpServer(client: ObsidianClient, port: number) {
   const app = express();
@@ -22,7 +34,7 @@ export function createHttpServer(client: ObsidianClient, port: number) {
   const mcpServer = new Server(
     {
       name: 'obsidian-http',
-      version: '1.0.0',
+      version: VERSION,
     },
     {
       capabilities: {
@@ -227,31 +239,31 @@ export function createHttpServer(client: ObsidianClient, port: number) {
     let result;
     switch (name) {
       case 'list_dir':
-        result = await listDir(client, args as any);
+        result = await listDir(client, (args || {}) as unknown as ListDirArgs);
         break;
       case 'list_files':
-        result = await listFiles(client, args as any);
+        result = await listFiles(client, (args || {}) as unknown as ListFilesArgs);
         break;
       case 'read_file':
-        result = await readFile(client, args as any);
+        result = await readFile(client, (args || {}) as unknown as ReadFileArgs);
         break;
       case 'write_file':
-        result = await writeFile(client, args as any);
+        result = await writeFile(client, (args || {}) as unknown as WriteFileArgs);
         break;
       case 'search':
-        result = await search(client, args as any);
+        result = await search(client, (args || {}) as unknown as SearchArgs);
         break;
       case 'move_file':
-        result = await moveFile(client, args as any);
+        result = await moveFile(client, (args || {}) as unknown as MoveFileArgs);
         break;
       case 'delete_file':
-        result = await deleteFile(client, args as any);
+        result = await deleteFile(client, (args || {}) as unknown as DeleteFileArgs);
         break;
       case 'delete_folder':
-        result = await deleteFolder(client, args as any);
+        result = await deleteFolder(client, (args || {}) as unknown as DeleteFolderArgs);
         break;
       case 'find_files':
-        result = await findFiles(client, args as any);
+        result = await findFiles(client, (args || {}) as unknown as FindFilesArgs);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);

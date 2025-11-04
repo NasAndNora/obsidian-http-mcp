@@ -1,6 +1,7 @@
 import type { ObsidianClient } from '../client/obsidian.js';
 import type { ToolResult } from '../types/index.js';
 import { invalidateFilesCache, walkVault } from './find.js';
+import { batchProcess } from '../utils/batch.js';
 
 function validateDeleteArgs(
   args: { path?: string; confirm?: boolean },
@@ -101,7 +102,8 @@ export async function deleteFolder(
 
     if (args.permanent) {
       // Hard delete: permanently remove all files (cannot be recovered)
-      await Promise.all(allFiles.map((f) => client.deleteFile(f)));
+      // Use batching to prevent API throttling (20 concurrent max)
+      await batchProcess(allFiles, (f) => client.deleteFile(f), 20);
       invalidateFilesCache();
 
       return {
@@ -113,13 +115,16 @@ export async function deleteFolder(
       };
     } else {
       // Soft delete (default): preserve folder structure in trash for easy recovery
-      await Promise.all(
-        allFiles.map(async (filePath) => {
+      // Use batching to prevent API throttling (20 concurrent max)
+      await batchProcess(
+        allFiles,
+        async (filePath) => {
           const trashPath = `.trash-http-mcp/${timestamp}/${filePath}`;
           const content = await client.readFile(filePath);
           await client.writeFile(trashPath, content);
           await client.deleteFile(filePath);
-        })
+        },
+        20
       );
 
       invalidateFilesCache();

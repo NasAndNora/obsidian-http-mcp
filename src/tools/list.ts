@@ -1,5 +1,5 @@
 import type { ObsidianClient } from '../client/obsidian.js';
-import type { ToolResult, ObsidianFile } from '../types/index.js';
+import type { ToolResult } from '../types/index.js';
 
 export async function listDir(
   client: ObsidianClient,

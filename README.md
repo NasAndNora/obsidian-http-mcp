@@ -13,6 +13,18 @@
 **Performance**: <200ms response, 70% fewer API calls via intelligent cache
 **Install**: `npm install -g obsidian-http-mcp`
 
+## ⚠️ Security Notice
+
+**This server is designed for trusted network environments** (localhost, LAN, VPN).
+
+For production deployment:
+- Use a reverse proxy (nginx/caddy) with authentication
+- Enable HTTPS/TLS
+- Configure rate limiting
+- See [SECURITY.md](./SECURITY.md) for full deployment checklist
+
+**Current state**: Binds to `0.0.0.0` for cross-platform compatibility (WSL2 ↔ Windows). Do NOT expose directly to the Internet without proper security controls.
+
 ## 🚀 Quick Start
 
 ### Prerequisites

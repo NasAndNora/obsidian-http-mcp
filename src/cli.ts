@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { VERSION } from './utils/version.js';
+
 interface CliArgs {
   apiKey?: string;
   port?: number;
@@ -49,6 +51,5 @@ For more info: https://github.com/yourusername/obsidian-http-mcp
 }
 
 export function showVersion(): void {
-  // Read from package.json in production
-  console.log('obsidian-http-mcp v1.0.0');
+  console.log(`obsidian-http-mcp v${VERSION}`);
 }
