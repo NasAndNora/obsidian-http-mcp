@@ -106,6 +106,7 @@ src/
 ## Dependencies
 
 **Runtime:**
+
 - `express` - HTTP server
 - `@modelcontextprotocol/sdk` - Official MCP SDK
 - `axios` - HTTP client

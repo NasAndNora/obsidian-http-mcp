@@ -15,6 +15,7 @@ Thank you for your interest in contributing! This guide will help you set up you
 ```bash
 # Fork the repository on GitHub first, then:
 git clone https://github.com/YOUR_GITHUB_USERNAME/obsidian-http-mcp.git
+
 cd obsidian-http-mcp
 ```
 
@@ -26,7 +27,7 @@ npm install
 
 ### 3. Configure Environment
 
-**Option A (Recommended): Interactive setup**
+#### Option A (Recommended): Interactive setup
 
 ```bash
 npm run build
@@ -36,7 +37,7 @@ node dist/cli.js --setup
 
 Config saved to `~/.obsidian-mcp/config.json`.
 
-**Option B: Using .env file**
+#### Option B: Using .env file
 
 Create a `.env` file for local development:
 
@@ -53,13 +54,15 @@ OBSIDIAN_BASE_URL=http://127.0.0.1:27123
 PORT=3000
 ```
 
-**If developing on WSL2 with Obsidian on Windows:**
+### WSL2 Development (Windows Host)
 
 ```env
 OBSIDIAN_BASE_URL=http://172.19.32.1:27123
 ```
 
-**Config priority**: CLI args > env vars > config.json > .env (see README)
+### Configuration Priority
+
+CLI arguments > Environment variables > config.json > .env (see README for details)
 
 ### 4. Start Development Server
 
@@ -116,6 +119,7 @@ npx tsc --noEmit
 ### Making Changes
 
 1. Create a feature branch:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -128,19 +132,21 @@ npx tsc --noEmit
    - Check all 11 MCP tools still work
 
 4. Commit your changes:
+
    ```bash
    git add .
    git commit -m "feat: your feature description"
    ```
 
 5. Push and create a Pull Request:
+
    ```bash
    git push origin feature/your-feature-name
    ```
 
 ## Project Structure
 
-```
+```text
 src/
 ├── server/http.ts          # Express + MCP SDK endpoint
 ├── client/obsidian.ts      # HTTP client to Obsidian API
