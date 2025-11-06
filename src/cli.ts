@@ -2,7 +2,7 @@
 
 import { VERSION } from './utils/version.js';
 import { createInterface } from 'readline';
-import { mkdirSync, writeFileSync, existsSync, chmodSync } from 'fs';
+import { mkdirSync, writeFileSync, existsSync, chmodSync, readFileSync } from 'fs';
 import { CONFIG_DIR, CONFIG_FILE } from './utils/config.js';
 
 interface CliArgs {
@@ -100,24 +100,64 @@ function prompt(question: string, defaultValue?: string): Promise<string> {
 export async function runSetup(): Promise<void> {
   console.log('\n=== Obsidian HTTP MCP Setup ===\n');
 
-  // Prompt for API key (required)
-  const apiKey = await prompt('Enter your Obsidian REST API key');
+  // Check if config already exists
+  let existingConfig: any = {};
+  if (existsSync(CONFIG_FILE)) {
+    try {
+      const content = readFileSync(CONFIG_FILE, 'utf-8');
+      existingConfig = JSON.parse(content);
+
+      // Show current config (mask API key)
+      console.log('Current configuration found:');
+      if (existingConfig.apiKey) {
+        const masked = existingConfig.apiKey.substring(0, 3) + '***' + existingConfig.apiKey.slice(-3);
+        console.log(`  API Key: ${masked}`);
+      }
+      if (existingConfig.baseUrl) {
+        console.log(`  Base URL: ${existingConfig.baseUrl}`);
+      }
+      if (existingConfig.port) {
+        console.log(`  Port: ${existingConfig.port}`);
+      }
+      console.log('');
+
+      // Ask for confirmation
+      const confirm = await prompt('Update configuration? (y/n)', 'n');
+      if (confirm.toLowerCase() !== 'y') {
+        console.log('Setup cancelled.');
+        process.exit(0);
+      }
+      console.log('');
+    } catch (error) {
+      // Invalid config file, proceed with fresh setup
+      console.log('Warning: Could not read existing config. Creating new configuration.\n');
+    }
+  }
+
+  // Prompt for API key (use existing as default if available)
+  const defaultApiKey = existingConfig.apiKey || '';
+  const apiKeyPrompt = existingConfig.apiKey
+    ? 'Enter your Obsidian REST API key (press Enter to keep current)'
+    : 'Enter your Obsidian REST API key';
+  const apiKey = await prompt(apiKeyPrompt, defaultApiKey);
 
   if (!apiKey) {
     console.error('Error: API key is required');
     process.exit(1);
   }
 
-  // Prompt for base URL (optional)
+  // Prompt for base URL (use existing as default if available)
+  const defaultBaseUrl = existingConfig.baseUrl || 'http://127.0.0.1:27123';
   const baseUrl = await prompt(
     'Enter Obsidian REST API URL',
-    'http://127.0.0.1:27123'
+    defaultBaseUrl
   );
 
-  // Prompt for port (optional)
+  // Prompt for port (use existing as default if available)
+  const defaultPort = existingConfig.port ? String(existingConfig.port) : '3000';
   const portStr = await prompt(
     'Enter server port',
-    '3000'
+    defaultPort
   );
 
   const port = parseInt(portStr, 10);

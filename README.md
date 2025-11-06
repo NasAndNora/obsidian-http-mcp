@@ -32,6 +32,11 @@ First HTTP-native MCP server for Obsidian. Solves stdio transport failures in Cl
 
 ### 2. Install & Setup (one-time)
 
+**Install on the same system as Obsidian:**
+
+- Windows Obsidian → Install on **Windows PowerShell**
+- Linux Obsidian → Install on **Linux terminal**
+
 ```bash
 npm install -g obsidian-http-mcp
 obsidian-http-mcp --setup
@@ -42,6 +47,8 @@ obsidian-http-mcp --setup
 **Config saved to `~/.obsidian-mcp/config.json`** - you won't need to type this again.
 
 ### 3. Start Server
+
+**On the same system as Obsidian (Windows PowerShell or Linux terminal):**
 
 ```bash
 obsidian-http-mcp
