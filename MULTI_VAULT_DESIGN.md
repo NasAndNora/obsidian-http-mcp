@@ -1,6 +1,6 @@
 # Multi-Vault Support Design (v1.1) ( NEED TO BE REVIEWED )
 
-**Status**: Future Feature | **Target**: v1.1.0 | **Current**: v1.0.1
+**Status**: Future Feature | **Target**: v1.1.0 | **Current**: v1.0.2
 
 ---
 
@@ -43,7 +43,6 @@ http://localhost:3000/mcp/...          → Default vault
 - Systemd/service (Linux-only)
 - Obsidian plugin (massive effort, dependency risk)
 - Context detection (unreliable, 15% error rate)
-
 
 ---
 
