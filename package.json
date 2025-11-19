@@ -44,7 +44,11 @@
     "TROUBLESHOOTING.md",
     "SECURITY.md",
     "CONTRIBUTING.md",
-    "LICENSE"
+    "LICENSE",
+    "Dockerfile",
+    "docker-compose.yml",
+    ".env.docker.example",
+    "DOCKER_MCP_SETUP.md"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.2",

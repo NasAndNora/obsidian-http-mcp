@@ -11,7 +11,6 @@ tsconfig.json
 .editorconfig
 
 # Deployment
-Dockerfile
 smithery.yaml
 
 # Environment
